@@ -2,9 +2,20 @@ package com.devsuperior.dscatalog.entities;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 //serializable tranforma a classe em sequencia de bites. Não obrigatório
+//anotação do JPA para dizer que a classe é uma entidade do banco
+@Entity
+@Table(name= "tb_category")
 public class Category implements Serializable{
 	private static final long serialVersionUID = 1L;
+	@Id //representa a chave primária da tabela
+	@GeneratedValue(strategy = GenerationType.IDENTITY) //para gerar um chave auto-inrementada
 	private long id;
 	private String name;
 	
