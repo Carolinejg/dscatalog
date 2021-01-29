@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devsuperior.dscatalog.DTO.CategoryDTO;
 import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.repositories.CategoryRepository;
+import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
 
 @Service //vai registrar com um componente que vai participar da injeção de dependencia automatizado 
 public class CategoryService {
@@ -33,7 +34,7 @@ public class CategoryService {
 		
 		//Optional nunca será um objeto nulo 
 		Optional<Category>obj=repository.findById(id);
-		Category entity = obj.get();//esse método obtem o objeto dentro do optional
+		Category entity = obj.orElseThrow(() -> new EntityNotFoundException("Entidade não encontrada")); //permite definir uma chamada de exceção
 		return new CategoryDTO(entity);  
 	}
 
