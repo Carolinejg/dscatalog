@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devsuperior.dscatalog.DTO.CategoryDTO;
 import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.repositories.CategoryRepository;
-import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
+import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 
 @Service //vai registrar com um componente que vai participar da injeção de dependencia automatizado 
 public class CategoryService {
@@ -33,8 +35,8 @@ public class CategoryService {
 	public CategoryDTO findByID(Long id) {
 		
 		//Optional nunca será um objeto nulo 
-		Optional<Category>obj=repository.findById(id);
-		Category entity = obj.orElseThrow(() -> new EntityNotFoundException("Entidade não encontrada")); //permite definir uma chamada de exceção
+		Optional<Category>obj=repository.findById(id);//vai no banco e tras os dados do objeto
+		Category entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entidade não encontrada")); //permite definir uma chamada de exceção
 		return new CategoryDTO(entity);  
 	}
 	
@@ -45,5 +47,21 @@ public class CategoryService {
 		entity = repository.save(entity);
 		return new  CategoryDTO(entity);
 	}
+
+	@Transactional
+	public CategoryDTO update(Long id,CategoryDTO dto) {//para não ir no banco sem necessidade
+		try {
+			Category entity = repository.getOne(id);// o getOne não toca no banco, intancia um obj provisório so quando manda salvar que ele acessa o bd
+			entity.setName(dto.getName());
+			entity = repository.save(entity);
+			return new  CategoryDTO(entity);
+		}
+		catch(EntityNotFoundException e) {//se chamar o getOne para um id que não existe e tentar salvar acontece essa exceção 
+			throw new ResourceNotFoundException("Id not found" + id);
+		}
+			
+	}
+			
+	
 
 }
