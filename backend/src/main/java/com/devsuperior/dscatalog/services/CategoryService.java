@@ -7,12 +7,15 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.dscatalog.DTO.CategoryDTO;
 import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.repositories.CategoryRepository;
+import com.devsuperior.dscatalog.services.exceptions.DatabaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 
 @Service //vai registrar com um componente que vai participar da injeção de dependencia automatizado 
@@ -60,6 +63,19 @@ public class CategoryService {
 			throw new ResourceNotFoundException("Id not found" + id);
 		}
 			
+	}
+	//nao tem a anotação transactional porque queremos capturar uma exceção do banco
+	public void delete(Long id) {
+		try {
+			repository.deleteById(id);
+		}
+		catch(EmptyResultDataAccessException e ) {//se tentar deletar um id que não existe
+			throw new ResourceNotFoundException("Id not found" + id);
+		}
+		catch(DataIntegrityViolationException e) {//se tentar deletar algo que não deve como category, uma vez que todo produto tem pelo menos uma categoria
+			throw new DatabaseException("Integrity violation");
+		}
+		
 	}
 			
 	
