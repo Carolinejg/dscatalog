@@ -7,9 +7,11 @@ O projeto consiste no sistema para catálogo de produtos. No momento está sendo
 - Postman para equisições feitas pela API
 - Padrão REST e DTO
 
-## Estrutura do projeto 
+## Modelo conceitual 
+![Modelo Conceitual](https://github.com/Carolinejg/dscatalog/blob/master/Figuras/modeloconceitual.png)
 
 ## Padrão camadas adotado
-
 ![camdas](https://github.com/Carolinejg/dsdeliver-sds2/blob/main/figuras/camadas.png)
+
+
 
